@@ -1,7 +1,7 @@
 #  Calc with python tkinter
 #  William Dos Santos junqueira
 
-from tkinter import *
+
 import customtkinter as ctk
 
 
@@ -22,10 +22,8 @@ class Calc:
     def doAritimatic(self, expression):
         e = expression.split(' ')
 
-
         numbers = e[::2]
         operators = e[1::2]
-
 
         n = 1
         x = numbers[0]
@@ -35,7 +33,6 @@ class Calc:
             n += 1
 
         return x
-
 
 
     # identify the operation and start the desired function
@@ -57,7 +54,7 @@ class Calc:
         return operation
 
 
-    #  --Basic Operations
+    #  ---------Basic Operations-------------
 
     def sum(self, x, y):
         return x+y
@@ -74,7 +71,7 @@ class Calc:
     def percentage(self, x, y):
         return (x/100) * y
 
-    #  Other operations
+    #  -----------------Other operations---------------
     def square(self, x):
         return x**2
 
@@ -85,18 +82,23 @@ class Calc:
         return 1/x
 
 
+
+
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
-
+        # 21
         self.title('calc')
+        self.geometry('327x470')
+        self.resizable(0, 0)
 
         #  frames
-        # self.display_frame = Frame(self.master, bg='blue')
-        self.buttons_frame = ctk.CTkFrame(self.master)
+        self.display_frame = ctk.CTkFrame(self.master, fg_color='#20201e', width=321, height=168)
+        self.buttons_frame = ctk.CTkFrame(self.master, fg_color='#20201e')
 
-        # self.display_frame.pack(fill='both', expand='true')
-        self.buttons_frame.pack()
+        self.display_frame.grid(row=0, column=0, padx=3, pady=5)
+        self.buttons_frame.grid(row=1, column=0, padx=3,)
+
 
         self.draw_buttons()
 
@@ -104,20 +106,24 @@ class App(ctk.CTk):
         self.expression = ''
 
 
+
+
+
+
+    #  Draw the buttons on screen
     def draw_buttons(self):
         for x in range(6):
             for y in range(4):
-                btn = ctk.CTkButton(self.buttons_frame, text=buttons[x][y], command= lambda x=buttons[x][y]: self.button_callback(x))
-                btn.grid(row=x, column=y, padx=4, pady=4)
+                btn = ctk.CTkButton(self.buttons_frame, text=buttons[x][y], width=78, height=46, fg_color='#3c3b38', command= lambda x=buttons[x][y]: self.button_callback(x))
+                btn.grid(row=x, column=y, padx=1, pady=1)
+
+
 
 
     def button_callback(self, x):
-
         show = True
 
-
         if x == '=':
-
             self.expression = self.e
             print('-'*10)
             print('expression -->', self.expression)
@@ -125,11 +131,9 @@ class App(ctk.CTk):
             print('Result -->', self.result)
             self.e = str(self.result)
 
-
         elif x in '+-x÷%':
             if self.e[-2:]  in ' + - x ÷ % ':
                 pass
-
             else:
                 self.e += ' '+x+' '
                 self.expression = self.e
@@ -166,7 +170,6 @@ class App(ctk.CTk):
                 self.result = Calc().square((e))
                 print('Result -->', self.result)
                 self.e = str(self.result)
-
             except:
                 show = False
 
@@ -177,24 +180,17 @@ class App(ctk.CTk):
                 self.result = Calc().invert((e))
                 print('Result -->', self.result)
                 self.e = str(self.result)
-
             except:
                 show = False
-
-
-
-
         else:
             if self.e == '0':
                 self.e = x
             else:
                 self.e += x
 
-
         if show: print(self.e)
 
 
-
-
-app = App()
-app.mainloop()
+if __name__ == '__main__':
+    app = App()
+    app.mainloop()

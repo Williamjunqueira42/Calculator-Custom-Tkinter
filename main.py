@@ -1,7 +1,5 @@
 #  Calc with python tkinter
 #  William Dos Santos junqueira
-
-
 import customtkinter as ctk
 
 
@@ -88,7 +86,7 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         # 21
-        self.title('calc')
+        self.title('calculator')
         self.geometry('327x470')
         self.resizable(0, 0)
 
@@ -99,14 +97,19 @@ class App(ctk.CTk):
         self.display_frame.grid(row=0, column=0, padx=3, pady=5)
         self.buttons_frame.grid(row=1, column=0, padx=3,)
 
+        self.expression_output =ctk.CTkLabel(self.display_frame, text='', font=('arial', 20))
+        self.digit_output = ctk.CTkLabel(self.display_frame, text='0', font=('arial', 50))
+
+        self.expression_output.place(relx=0.1, rely=0.2)
+        self.digit_output.place(relx = 0.1, rely = 0.5,)
+
+        self.text=''
 
         self.draw_buttons()
 
         self.e = ''
         self.expression = ''
-
-
-
+        self.start_expression_output = False
 
 
 
@@ -114,41 +117,43 @@ class App(ctk.CTk):
     def draw_buttons(self):
         for x in range(6):
             for y in range(4):
-                btn = ctk.CTkButton(self.buttons_frame, text=buttons[x][y], width=78, height=46, fg_color='#3c3b38', command= lambda x=buttons[x][y]: self.button_callback(x))
+                btn = ctk.CTkButton(self.buttons_frame, text=buttons[x][y], width=78, height=46, fg_color='#3c3b38', font=('arial', 20), command= lambda x=buttons[x][y]: self.button_callback(x))
                 btn.grid(row=x, column=y, padx=1, pady=1)
 
 
-
-
     def button_callback(self, x):
-        show = True
-
         if x == '=':
             self.expression = self.e
-            print('-'*10)
-            print('expression -->', self.expression)
             self.result =  Calc().doAritimatic(self.expression.replace(',', '.'))
-            print('Result -->', self.result)
+            self.digit_output.configure(text=self.result)
             self.e = str(self.result)
+
 
         elif x in '+-x÷%':
             if self.e[-2:]  in ' + - x ÷ % ':
                 pass
             else:
                 self.e += ' '+x+' '
+                self.text = ''
+                self.expression_output.configure(text=self.e)
+                self.start_expression_output = True
                 self.expression = self.e
 
         elif x == '←':
             self.e = self.e[:-1]
-
+            self.digit_output.configure(text=self.e)
 
         elif x == 'CE':
-            self.expression = ''
-            self.e = str(self.result)
+            # self.expression = ''
+            # self.digit_output.configure(text='0')
+            # self.e = str(self.result)
+            pass
 
         elif x == 'C':
             self.expression = ''
             self.e = '0'
+            self.text = ''
+            self.digit_output.configure(text='0')
 
         elif x == ' ²√x':
 
@@ -157,11 +162,10 @@ class App(ctk.CTk):
                 e = float(self.e)
                 self.result = Calc().sqrt((e))
                 print('Result -->', self.result)
+                self.digit_output.configure(text=self.result)
                 self.e = str(self.result)
-
-
             except:
-                show = False
+                pass
 
         elif x == 'x²':
             try:
@@ -170,6 +174,7 @@ class App(ctk.CTk):
                 self.result = Calc().square((e))
                 print('Result -->', self.result)
                 self.e = str(self.result)
+                self.digit_output.configure(text=self.result)
             except:
                 show = False
 
@@ -179,17 +184,23 @@ class App(ctk.CTk):
                 e = float(self.e)
                 self.result = Calc().invert((e))
                 print('Result -->', self.result)
+                self.digit_output.configure(text=self.result)
                 self.e = str(self.result)
             except:
                 show = False
+
         else:
             if self.e == '0':
                 self.e = x
             else:
                 self.e += x
 
-        if show: print(self.e)
 
+            if self.start_expression_output:
+                self.expression_output.configure(text=self.e)
+
+            self.text += x
+            self.digit_output.configure(text=self.text)
 
 if __name__ == '__main__':
     app = App()
